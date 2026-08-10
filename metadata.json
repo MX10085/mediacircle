@@ -1,0 +1,26 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "mx10085@qq.com",
+                "Name": "Jiang"
+            }
+        ],
+        "Category": "Multimedia",
+        "Description": "Circular music player for the taskbar: spinning album art, progress ring, playback controls and synced lyrics.",
+        "Description[zh_CN]": "圆形媒体控制：封面 + 播放键 + 环形进度条",
+        "Icon": "spotify",
+        "Id": "mediacircle",
+        "License": "GPL-3.0-or-later",
+        "Name": "Media Circle",
+        "Name[zh_CN]": "圆形媒体控制",
+        "Version": "1.0.0"
+    },
+    "X-Plasma-API": "declarative",
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-MainScript": "ui/main.qml",
+    "X-Plasma-Provides": [
+        "org.kde.plasma.multimediacontrols"
+    ]
+}
