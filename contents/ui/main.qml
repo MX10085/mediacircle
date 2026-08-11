@@ -30,12 +30,35 @@ PlasmoidItem {
     readonly property int playbackStatus: ready ? player.playbackStatus : Mpris.PlaybackStatus.Unknown
     readonly property string title: ready ? player.track : ""
     readonly property string artists: ready ? player.artist : ""
-    readonly property string artUrl: ready ? player.artUrl : ""
+    // 封面兜底：当前播放器（如 Edge 原生 MPRIS）没给 artUrl 时，从其他 MPRIS 服务
+    // （如 plasma-browser-integration）借封面。休眠恢复后服务重新枚举常见此情况。
+    readonly property string artUrl: ready ? (player.artUrl || fallbackArtUrl) : ""
+    // 其他 MPRIS 服务的最新封面（只读借用，不影响 currentPlayer 控制）
+    property string fallbackArtUrl: ""
     readonly property double songPosition: ready ? player.position : 0
     readonly property double songLength: ready ? player.length : 0
     readonly property bool canPlay: ready ? player.canPlay : false
     readonly property bool canPause: ready ? player.canPause : false
     readonly property double progress: songLength > 0 ? Math.min(Math.max(songPosition / songLength, 0), 1) : 0
+
+    // 遍历 MPRIS 模型，监听其他播放器的封面变化并缓存（Repeater delegate 可直接读角色）
+    Repeater {
+        id: artProbeRepeater
+        model: mprisModel
+        delegate: Item {
+            property string probeArt: model.artUrl || ""
+            onProbeArtChanged: {
+                if (probeArt && probeArt !== widget.fallbackArtUrl) {
+                    widget.fallbackArtUrl = probeArt
+                }
+            }
+            Component.onCompleted: {
+                if (probeArt && probeArt !== widget.fallbackArtUrl) {
+                    widget.fallbackArtUrl = probeArt
+                }
+            }
+        }
+    }
 
     // ============ 歌词（在线获取 lrclib.net） ============
     property ListModel lyricsModel: ListModel {}
